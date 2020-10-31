@@ -1,8 +1,11 @@
+require('dotenv').config()
 let express = require('express')
 let ejsLayouts = require('express-ejs-layouts')
 let db = require('./models')
 let moment = require('moment')
 let app = express()
+
+
 
 app.set('view engine', 'ejs')
 
@@ -31,6 +34,27 @@ app.get('/', (req, res) => {
     res.status(400).render('main/404')
   })
 })
+
+app.post('/comments', (req,res) => {
+  db.comment.create({
+    name: req.body.name,
+    content: req.body.content,
+    articleId: req.body.articleId
+    //may be req.body.articleId
+  })
+  .then((project) => {
+    res.redirect(`/articles/${req.body.articleId}`)
+  })
+  .catch((error) => {
+    res.status(400).render('main/404')
+  })
+})
+
+
+
+
+
+
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`You're listening to the smooth sounds of port ${process.env.PORT}`)
